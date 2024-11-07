@@ -10,6 +10,7 @@ init()
 {
     level.givecustomloadout = ::load_class;
     load_effects();
+    dvars();
 
     foreach(models in strtok("collision_clip_32x32x10,t6_wpn_supply_drop_ally,collision_clip_32x32x32,t6_wpn_drop_box", ","))
     {
@@ -17,7 +18,7 @@ init()
     }
 
     level thread on_connect();
-    thread loot_crate("hi");
+    thread setup_crates();
 }
 
 on_connect()
@@ -38,7 +39,7 @@ on_event()
 
     for( ;; ) 
     {
-        event = self common_scripts\utility::waittill_any_return( "spawned_player", "death" );
+        event = self common_scripts\utility::waittill_any_return( "spawned_player", "death", "disconnect", "weapon_change" );
         switch( event ) 
         {
             case "spawned_player":
@@ -58,40 +59,16 @@ first_spawn()
     if(!isDefined(self.pers["init"]))
         setpers("init", true);
 
-    // make sure classes load on spawn properly
     thread save_class();
     thread load_class();
-
     thread spam_loc();
-    pprint("Oh, this only runs once..");
+    thread setup_oom();
 }
 
 player_spawn()
 {
-    self setclientthirdperson(true);
-
     unfreeze();
-    thread smart_third();
+    // thread smart_third();
     thread track_weapon();
     pprint("Hello, " + self.name);
-}
-
-smart_third() // add for snipers only prob and might not use at all who knows
-{
-    while(true)
-    {
-        if(self adsbuttonpressed())
-        {
-            if(!isDefined(self.waiting) && self adsButtonPressed()) 
-            {
-                self.waiting = true;
-                wait 0.3;
-                self setclientthirdperson(false);
-                self.waiting = undefined;
-            }
-        } else {
-            self setclientthirdperson(true);
-        }
-        waiting();
-    }
 }

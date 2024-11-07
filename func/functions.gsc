@@ -28,19 +28,31 @@ custom_class( weap1, weap2, name, eq1, eq2 )
         self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
     }
 
-    if(isDefined(self.lastgun) && self.lastgun != "none")
+    if(isDefined(last_gun()) && last_gun() != "none")
     {
-        if(self.lastgun != weap && self.lastgun != weap2)
+        if(last_gun() == weap2) // make sure weapon orders are correct
+        {
+        weapons = array(weap2,weap1,eq1,eq2);
+        self takeallweapons();
+        }
+
+        foreach(weap in weapons)
+        {
+            self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
+        }
+
+        if(last_gun() != weap && last_gun() != weap2)
         {
             self switchtoweapon( weap1 );
             return;
         }
 
-        self switchtoweapon(self.lastgun);
+        self switchtoweapon(last_gun());
+        print(last_gun());
         return;
     }
-
     self switchtoweapon( weap1 );
+    // reload_ammo();
 }
 
 save_class(update,primary,secondary,lethal,tactical,name)
@@ -89,13 +101,41 @@ save_class(update,primary,secondary,lethal,tactical,name)
 load_class()
 {
     custom_class(self.inventory["primary"], self.inventory["secondary"], self.inventory["name"], self.inventory["lethal"], self.inventory["tactical"]);
+    most_perks();
 }
 
-update_class(weapon)
+update_primary(weapon)
 {
     save_class(1,weapon);
     load_class();
-    pprint("Updating class...", 1);
+    pprint("Updating primary...");
+}
+
+update_secondary(weapon)
+{
+    save_class(1,undefined,weapon);
+    load_class();
+    pprint("Updating secondary...");
+}
+
+track_ammo()
+{
+    self.pers["new_clip"][0]  = self getWeaponAmmoClip(self.inventory["primary"]);
+    self.pers["new_stock"][0] = self getWeaponAmmoStock(self.inventory["primary"]);
+    self.pers["new_clip"][1]  = self getWeaponAmmoClip(self.inventory["secondary"]);
+    self.pers["new_stock"][1] = self getWeaponAmmoStock(self.inventory["secondary"]);
+    print("tracked ammo: " + self.pers["new_clip"][0]);
+}
+
+reload_ammo()
+{
+    self setWeaponAmmoClip(self.inventory["primary"], self.pers["new_clip"][0]);
+    self setWeaponAmmoStock(self.inventory["primary"], self.pers["new_stock"][0]); 
+
+    self setWeaponAmmoClip(self.inventory["secondary"], self.pers["new_clip"][1]);
+    self setWeaponAmmoStock(self.inventory["secondary"], self.pers["new_stock"][1]); 
+
+    print("called");
 }
 
 track_weapon()
@@ -105,11 +145,25 @@ track_weapon()
     while(1)
     {
         self.lastgun = self getCurrentWeapon();
-        wait 0.05;
+        waiting();
     }
 }
 
 last_gun()
 {
     return self.lastgun;
+}
+
+smart_third() // add for snipers only prob and might not use at all who knows
+{
+    while(true)
+    {
+        if(self adsbuttonpressed())
+        {
+            self setclientthirdperson(false);
+        } else {
+            self setclientthirdperson(true);
+        }
+        waiting();
+    }
 }

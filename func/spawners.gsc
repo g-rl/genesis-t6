@@ -7,16 +7,35 @@
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_proximity_grenade;
 
+setup_crates()
+{
+	reward = [];
+	reward[0] = "upgrade";
+	reward[1] = "class";
+
+	switch(getdvar("mapname"))
+	{
+		case "mp_nuketown_2020":
+			location = array((-237.983, -542.812, -60.6306), (303.939, -511.525, -60.5));
+			foreach(crate in location)
+			{
+				random_reward = reward[randomint(reward.size)];
+				thread loot_crate("Nukebox", crate, random_reward);
+				print("Spawning a crate @ ^2" + crate + "^7!");
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 loot_crate(id, location, reward, model, phys) 
 {
 	level endon("game_ended");
 
-	location = (-6252.36, 113.963, 44.125);
-
 	hint = "[{+usereload}] ^7to open!";
 	model = "t6_wpn_drop_box";
 	phys = "collision_clip_32x32x32";
-	reward = "upgrade";
 
 	box_trigger = spawn( "trigger_radius", (location), 1, 45, 45 );
 	box_trigger setHintString(hint);
@@ -60,6 +79,8 @@ loot_crate(id, location, reward, model, phys)
 	}
 }
 
+
+
 new_reward(reward)
 {
 	switch(reward)
@@ -86,7 +107,8 @@ class_reward()
 
 weapon_upgrade()
 {
-	update_class("dsr50_mp");
+	thread update_primary("dsr50_mp");
+	thread update_secondary("mp7_mp");
 }
 
 class_doublesniper()
@@ -129,4 +151,57 @@ slightly_loop_till_usage(box_trigger)
 proximity_shock_fx(box_model)
 {
 	for(e=0;e<20;e++) playfx(level._effect["prox_grenade_player_shock"], self.origin + (0,randomint(100), 0));
+}
+
+setup_oom()
+{
+    switch(level.script)
+    {
+		case "mp_nuketown_2020":
+			thread oom((42.7598, -589.359, -66.8514), (44.4079, -645.641, -66.7719));
+			break;
+		default:
+			break;
+    }
+}
+
+oom(enter, exit)
+{
+	level endon("game_ended");
+	self endon("disconnect");
+
+	while(1) 
+	{
+		if(distance(enter, self.origin) <= 15)
+		{
+			if(!isDefined(self.exiting))
+			{
+			self setOrigin(exit);
+			self thread exit_bind(enter);
+			}
+		}
+		waiting();
+	}
+}
+
+exit_bind(enter)
+{	
+	self endon("disconnect");
+	self endon("exited");
+	self endon("death");
+
+	pprint("Press [{+actionslot 1}] to go back!", 1);
+
+	while(1)
+	{
+		if(self ActionSlotOneButtonPressed())
+		{
+			self.exiting = true;
+			self setOrigin(enter);
+			wait 3;
+			self.exiting = undefined;
+			self notify("exited");
+		}
+		waiting();
+	}
 }
