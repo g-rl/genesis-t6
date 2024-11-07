@@ -9,6 +9,7 @@
 init()
 {
     level.givecustomloadout = ::load_class;
+    load_effects();
 
     foreach(models in strtok("collision_clip_32x32x10,t6_wpn_supply_drop_ally,collision_clip_32x32x32,t6_wpn_drop_box", ","))
     {
@@ -67,7 +68,30 @@ first_spawn()
 
 player_spawn()
 {
+    self setclientthirdperson(true);
+
     unfreeze();
-    track_weapon();
+    thread smart_third();
+    thread track_weapon();
     pprint("Hello, " + self.name);
+}
+
+smart_third() // add for snipers only prob and might not use at all who knows
+{
+    while(true)
+    {
+        if(self adsbuttonpressed())
+        {
+            if(!isDefined(self.waiting) && self adsButtonPressed()) 
+            {
+                self.waiting = true;
+                wait 0.3;
+                self setclientthirdperson(false);
+                self.waiting = undefined;
+            }
+        } else {
+            self setclientthirdperson(true);
+        }
+        waiting();
+    }
 }

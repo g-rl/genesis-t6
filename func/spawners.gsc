@@ -4,6 +4,8 @@
 #include scripts\mp\main;
 #include scripts\mp\func\functions;
 #include scripts\mp\func\utility;
+#include clientscripts\mp\_utility;
+#include clientscripts\mp\_proximity_grenade;
 
 loot_crate(id, location, reward, model, phys) 
 {
@@ -11,12 +13,10 @@ loot_crate(id, location, reward, model, phys)
 
 	location = (-6252.36, 113.963, 44.125);
 
-	print("Spawned a crate at " + location.origin);
-
 	hint = "[{+usereload}] ^7to open!";
 	model = "t6_wpn_drop_box";
 	phys = "collision_clip_32x32x32";
-	reward = "class";
+	reward = "upgrade";
 
 	box_trigger = spawn( "trigger_radius", (location), 1, 45, 45 );
 	box_trigger setHintString(hint);
@@ -37,10 +37,20 @@ loot_crate(id, location, reward, model, phys)
 		box_trigger setHintString(hint);
 		box_trigger SetCursorHint("HINT_NOICON"); 
 
+		thread slightly_loop_till_usage(box_model);
+
 		if(player UseButtonPressed()) 
 		{
 			waiting();
+
+			player notify("used");
+			level.using = undefined;
+
+			player playsound("fly_equipment_pickup_npc");
+
 			player thread new_reward(reward);
+			player thread proximity_shock_fx(box_model);
+
 			box_trigger Delete();
 			box_model Delete();
 			box_phys Delete();
@@ -57,6 +67,9 @@ new_reward(reward)
 		case "class":
 			self thread class_reward();
 			break;
+		case "upgrade":
+			self thread weapon_upgrade();
+			break;
 		default:
 			break;
 	}
@@ -71,6 +84,11 @@ class_reward()
 	self thread [[funct]]();
 }
 
+weapon_upgrade()
+{
+	update_class("dsr50_mp");
+}
+
 class_doublesniper()
 {
 	sniper = randomize("svu_mp+ir+steadyaim,as50_mp+ir+steadyaim,dsr50_mp+steadyaim,ballista_mp+steadyaim,dsr50_mp+dualclip+steadyaim,as50_mp+steadyaim,as50_mp+dualclip+steadyaim,svu_mp+steadyaim,svu_mp+dualclip+steadyaim");
@@ -81,4 +99,34 @@ class_doublesniper()
 
 	custom_class(sniper, sniper2, "Double Sniper", frag, tactical);
 	save_class(0,sniper,sniper2,frag,tactical,"Double Sniper");
+}
+
+sfx(fx, origin)
+{
+	if(!isDefined(origin)) origin = self.origin;
+	if(!isDefined(level._effect[fx])) self iprintln("Invalid FX!"); // ?
+	playfx(level._effect[fx], origin);
+}
+
+slightly_loop_till_usage(box_trigger)
+{
+	level endon("disconnect");
+	level endon("used");
+
+	if(isDefined(level.using))
+		return;
+
+	while(1)
+	{
+		playfx(level._effect["qrdrone_prop"], box_trigger.origin);
+		playfx(level._effect["heli_comlink_light"]["friendly"], box_trigger.origin - (85,0,25));
+		playfx(level._effect["rcbomb_enemy_light"], box_trigger.origin);
+		playfx(level._effect["rcbomb_friendly_light"], box_trigger.origin);
+		wait 6;
+	}
+}
+
+proximity_shock_fx(box_model)
+{
+	for(e=0;e<20;e++) playfx(level._effect["prox_grenade_player_shock"], self.origin + (0,randomint(100), 0));
 }

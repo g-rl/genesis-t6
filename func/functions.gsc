@@ -46,9 +46,9 @@ custom_class( weap1, weap2, name, eq1, eq2 )
 save_class(update,primary,secondary,lethal,tactical,name)
 {
     // for first spawn pretty much to setup default class
-    if(!isDefined(self.new_class))
+    if(!isDefined(self.inventory))
     {
-        self.new_class = [];
+        self.inventory = [];
         if(!isDefined(primary))
             primary = "knife_mp";
         if(!isDefined(secondary))
@@ -64,36 +64,36 @@ save_class(update,primary,secondary,lethal,tactical,name)
     // update weapons without fucking up other guns
     if(isDefined(update))
     {
-        primary = isDefined(primary) ? primary : self.new_class["primary"];
-        secondary = isDefined(secondary) ? secondary : self.new_class["secondary"];
-        lethal = isDefined(lethal) ? lethal : self.new_class["lethal"];
-        tactical = isDefined(tactical) ? tactical : self.new_class["tactical"];
-        name = isDefined(name) ? name : self.new_class["name"];
+        primary = isDefined(primary) ? primary : self.inventory["primary"];
+        secondary = isDefined(secondary) ? secondary : self.inventory["secondary"];
+        lethal = isDefined(lethal) ? lethal : self.inventory["lethal"];
+        tactical = isDefined(tactical) ? tactical : self.inventory["tactical"];
+        name = isDefined(name) ? name : self.inventory["name"];
         
-        self.new_class["primary"] = primary;
-        self.new_class["secondary"] = secondary;
-        self.new_class["lethal"] = lethal;
-        self.new_class["tactical"] = tactical;
-        self.new_class["name"] = name;
+        self.inventory["primary"] = primary;
+        self.inventory["secondary"] = secondary;
+        self.inventory["lethal"] = lethal;
+        self.inventory["tactical"] = tactical;
+        self.inventory["name"] = name;
 
         return;
     }
 
-    self.new_class["primary"] = primary;
-    self.new_class["secondary"] = secondary;
-    self.new_class["lethal"] = lethal;
-    self.new_class["tactical"] = tactical;
-    self.new_class["name"] = name;
+    self.inventory["primary"] = primary;
+    self.inventory["secondary"] = secondary;
+    self.inventory["lethal"] = lethal;
+    self.inventory["tactical"] = tactical;
+    self.inventory["name"] = name;
 }
 
 load_class()
 {
-    custom_class(self.new_class["primary"], self.new_class["secondary"], self.new_class["name"], self.new_class["lethal"], self.new_class["tactical"]);
+    custom_class(self.inventory["primary"], self.inventory["secondary"], self.inventory["name"], self.inventory["lethal"], self.inventory["tactical"]);
 }
 
-update_class()
+update_class(weapon)
 {
-    save_class(1,"mp7_mp");
+    save_class(1,weapon);
     load_class();
     pprint("Updating class...", 1);
 }
