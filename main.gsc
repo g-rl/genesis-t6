@@ -68,5 +68,6 @@ first_spawn()
 player_spawn()
 {
     unfreeze();
+    track_weapon();
     pprint("Hello, " + self.name);
 }

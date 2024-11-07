@@ -28,6 +28,18 @@ custom_class( weap1, weap2, name, eq1, eq2 )
         self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
     }
 
+    if(isDefined(self.lastgun) && self.lastgun != "none")
+    {
+        if(self.lastgun != weap && self.lastgun != weap2)
+        {
+            self switchtoweapon( weap1 );
+            return;
+        }
+
+        self switchtoweapon(self.lastgun);
+        return;
+    }
+
     self switchtoweapon( weap1 );
 }
 
@@ -38,9 +50,9 @@ save_class(update,primary,secondary,lethal,tactical,name)
     {
         self.new_class = [];
         if(!isDefined(primary))
-            primary = "dsr50_mp+dualclip+steadyaim";
+            primary = "knife_mp";
         if(!isDefined(secondary))
-            secondary = "ballista_mp+dualclip+steadyaim";
+            secondary = "none";
         if(!isDefined(lethal))
             lethal = "hatchet_mp";
         if(!isDefined(tactical))
@@ -84,4 +96,20 @@ update_class()
     save_class(1,"mp7_mp");
     load_class();
     pprint("Updating class...", 1);
+}
+
+track_weapon()
+{
+    self endon("disconnect");
+    self endon("death"); // switchtoweapon fix 
+    while(1)
+    {
+        self.lastgun = self getCurrentWeapon();
+        wait 0.05;
+    }
+}
+
+last_gun()
+{
+    return self.lastgun;
 }
