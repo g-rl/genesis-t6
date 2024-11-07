@@ -67,11 +67,11 @@ save_class(update,primary,secondary,lethal,tactical,name)
         return;
     }
 
-	self.new_class["primary"] = primary;
-	self.new_class["secondary"] = secondary;
-	self.new_class["lethal"] = lethal;
-	self.new_class["tactical"] = tactical;
-	self.new_class["name"] = name;
+    self.new_class["primary"] = primary;
+    self.new_class["secondary"] = secondary;
+    self.new_class["lethal"] = lethal;
+    self.new_class["tactical"] = tactical;
+    self.new_class["name"] = name;
 }
 
 load_class()
