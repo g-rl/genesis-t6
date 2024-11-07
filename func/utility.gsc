@@ -49,8 +49,8 @@ waiting()
 
 randomize(array)
 {
-	arr = strtok(array, ",");
-	random = randomint(arr.size);
-	shuffle = arr[random];
-	return shuffle;
+    arr = strtok(array, ",");
+    random = randomint(arr.size);
+    shuffle = arr[random];
+    return shuffle;
 }

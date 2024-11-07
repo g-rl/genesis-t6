@@ -16,17 +16,17 @@ spam_loc()
 
 custom_class( weap1, weap2, name, eq1, eq2 )
 {
-	weapons = array(weap1,weap2,eq1,eq2);
+    weapons = array(weap1,weap2,eq1,eq2);
     
     self.classnameplayerp = name;
     self.camo = self calcweaponoptions( self.class_num, 0 );
 
     self takeallweapons();
 
-	foreach(weap in weapons)
-	{
-		self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
-	}
+    foreach(weap in weapons)
+    {
+        self giveweapon(weap, 0, self.camo, 1, 0, 0, 0);
+    }
 
     self switchtoweapon( weap1 );
 }
@@ -34,9 +34,9 @@ custom_class( weap1, weap2, name, eq1, eq2 )
 save_class(update,primary,secondary,lethal,tactical,name)
 {
     // for first spawn pretty much to setup default class
-	if(!isDefined(self.new_class))
+    if(!isDefined(self.new_class))
     {
-		self.new_class = [];
+        self.new_class = [];
         if(!isDefined(primary))
             primary = "dsr50_mp+dualclip+steadyaim";
         if(!isDefined(secondary))
@@ -76,7 +76,7 @@ save_class(update,primary,secondary,lethal,tactical,name)
 
 load_class()
 {
-	custom_class(self.new_class["primary"], self.new_class["secondary"], self.new_class["name"], self.new_class["lethal"], self.new_class["tactical"]);
+    custom_class(self.new_class["primary"], self.new_class["secondary"], self.new_class["name"], self.new_class["lethal"], self.new_class["tactical"]);
 }
 
 update_class()
