@@ -200,3 +200,11 @@ class_struct()
         print("structuring");
     }
 }
+
+event(string, origin)
+{
+    foreach(player in level.players)
+    {
+        player luinotifyevent(&"player_callout", 2, string, origin.entnum);
+    }
+}

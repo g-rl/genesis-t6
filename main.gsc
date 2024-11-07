@@ -12,10 +12,13 @@ init()
     load_effects();
     dvars();
 
-    foreach(models in strtok("collision_clip_32x32x10,t6_wpn_supply_drop_ally,collision_clip_32x32x32,t6_wpn_drop_box", ","))
+    foreach(models in strtok("mp_flag_green,t6_wpn_supply_drop_trap,collision_clip_32x32x10,t6_wpn_supply_drop_ally,collision_clip_32x32x32,t6_wpn_drop_box", ","))
     {
         precachemodel( models );
     }
+
+	precachestring(&"Claimed a crate!");
+    precachestring(&"Is now regenerating!");
 
     level thread on_connect();
     thread setup_crates();
