@@ -7,6 +7,44 @@
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_proximity_grenade;
 
+setup_mines()
+{
+    switch(level.script)
+    {
+		case "mp_drone":
+			mines = array((-1866.43, -991.17, 96.125), (-1392.99, -1110.64, 96.125), (-1684.41, -1977.96, 120.642), (-1305.24, -2110.6, 120.642), (-65.1644, -1305.27, -19.875));
+			foreach(mine in mines)
+			{
+				thread mines(mine);
+				print("Spawned a mine @ ^1" + mine);
+			}
+			break;
+		default:
+			break;
+    }
+}
+
+mines(location)
+{
+	level endon("game_ended");
+	self endon("disconnect");
+
+	box_model = spawn( "script_model", location);
+	box_model setmodel(getweaponmodel("bouncingbetty_mp"));
+	
+	while(1) 
+	{
+		foreach(player in level.players)
+		{
+			if(distance(location, player.origin) <= randomintrange(18,25))
+			{
+				player suicide();
+			}
+		}
+		waiting();
+	}
+}
+
 setup_crates()
 {
 	reward = [];
@@ -35,6 +73,8 @@ setup_crates()
 			break;
 	}
 }
+
+
 
 loot_crate(id, location, reward, model, phys) 
 {
@@ -76,9 +116,9 @@ loot_crate(id, location, reward, model, phys)
 			player thread new_reward(reward);
 			player thread proximity_shock_fx(box_model);
 
-			box_trigger Delete();
-			box_model Delete();
-			box_phys Delete();
+			box_trigger delete();
+			box_model delete();
+			box_phys delete();
 			waiting();
 			thread regen_crate(id, location, reward, model, phys, player);
 			wait 4;

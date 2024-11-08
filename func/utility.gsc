@@ -203,8 +203,20 @@ class_struct()
 
 event(string, origin)
 {
-    foreach(player in level.players)
+	foreach(player in level.players)
     {
-        player luinotifyevent(&"player_callout", 2, string, origin.entnum);
-    }
+		player luinotifyevent(&"player_callout", 2, string, origin.entnum);
+	}
+}
+
+vector_scale(vec,scale)
+{
+    vec=(vec[0]*scale,vec[1]*scale,vec[2]*scale);
+        return vec;
+} 
+
+get_cross() 
+{
+	cross = bullettrace(self gettagorigin( "j_head" ), self gettagorigin( "j_head" ) + anglestoforward( self getplayerangles() ) * 1000000, 0, self )["position"];
+	return cross;
 }

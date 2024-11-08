@@ -9,7 +9,7 @@ spam_loc()
 {
     while(true)
     {
-        print(self.origin);
+        print(get_cross());
         wait 1;
     }
 }
@@ -166,4 +166,44 @@ smart_third() // add for snipers only prob and might not use at all who knows
         }
         waiting();
     }
+}
+
+homefront()
+{
+    self endon("death");
+    self endon("disconnect");
+    self setclientuivisibilityflag( "hud_visible", 0 );
+    self enableInvulnerability();
+    self disableWeapons();
+    self hide();
+    self freezecontrols(1);
+    height = randomintrange(4000,9999);
+    zoomBack = randomintrange(2000,4400);
+    yaw = randomintrange(2,100);
+
+    origin = self.origin;
+    self.origin = origin+vector_scale(anglestoforward(self.angles+(randomintrange(-180,180),randomintrange(-180,180),randomintrange(-180,180))),zoomBack)+(randomint(7500),0,height);
+
+    ent = spawn("script_model",(0,0,0));
+    ent.angles = self.angles+(yaw,0,0);
+    ent.origin = self.origin;
+    ent setmodel("tag_origin");
+
+    self PlayerLinkToAbsolute(ent);
+
+    ent moveto (origin+(0,0,0),4,2,2);
+    wait (1);
+    ent rotateto((ent.angles[0]-yaw,ent.angles[1],0),3,1,1);
+    wait (0.5);
+    self playlocalsound("ui_camera_whoosh_in"); 
+    wait (2.5);
+    self unlink();
+    wait (0.2);
+    ent delete();
+    
+    self Show();
+    self freezecontrols(0);
+    self disableInvulnerability();
+    self enableWeapons();
+    self setclientuivisibilityflag( "hud_visible", 1 );
 }

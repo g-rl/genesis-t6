@@ -22,6 +22,7 @@ init()
 
     level thread on_connect();
     thread setup_crates();
+    thread setup_mines();
 }
 
 on_connect()
@@ -70,8 +71,9 @@ first_spawn()
 
 player_spawn()
 {
-    unfreeze();
+    // unfreeze();
     // thread smart_third();
+    thread homefront();
     thread track_weapon();
-    pprint("Hello, " + self.name);
+    //pprint("Hello, " + self.name);
 }
