@@ -1,20 +1,20 @@
----
+
 🌌 Genesis - MBR
 
-## Idea
-> A mini battle royale mode where the player is able to upgrade their weapons & equipment through loot crates around the map.
-> Maps will include different traps.
+# Idea
+- A mini battle royale mode where the player is able to upgrade their weapons & equipment through loot crates around the map.
+- Maps will include different traps.
 
-## Roadmap
+# Roadmap
 🎇 **Sound & FX**  
-  > Add sounds & FX for all events, such as killed by mines, etc.
+  - Add sounds & FX for all events, such as killed by mines, etc.
 
 📦 **Map Support**  
-  > Add crate locations for most or all important maps.
+  - Add crate locations for most or all important maps.
 
 🔄 **Persistent Ammo**  
-  > Make sure ammo stays throughout lives. ⚠️ *Note: Currently not working as expected—needs further development.*
+  - Make sure ammo stays throughout lives. ⚠️ *Note: Currently not working as expected—needs further development.*
 
 🎲 **Dynamic Item Spawns**  
-  > Have different items, such as equipment, placed in random areas that players can pick up.
----
+  - Have different items, such as equipment, placed in random areas that players can pick up.
+
