@@ -227,21 +227,14 @@ instant_explode()
 	self resetmissiledetonationtime(0);
 }
 
-bleeding_gun()
+shock_bullets()
 {
 	self endon("disconnect");
 	self endon("bloodGunOff");
 	for(;;)
 	{
         self waittill("weapon_fired");
-        
-        vec = anglestoforward(self getPlayerAngles());
-        end = (vec[0] * 200000, vec[1] * 200000, vec[2] * 200000);
-        eloc = BulletTrace(self gettagorigin("tag_eye"),self gettagorigin("tag_eye") + end, 0, self)["position"];
-
-        level._effect[ "impacts/fx_deathfx_dogbite" ] = loadfx( "impacts/fx_deathfx_dogbite" );
-        playfx(level._effect["impacts/fx_deathfx_dogbite"], eloc);
-
+        playfx(level._effect["prox_grenade_player_shock"], get_cross());
         waiting();
 	}
 	waiting();

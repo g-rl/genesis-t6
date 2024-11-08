@@ -32,16 +32,43 @@ mines(location)
 	box_model = spawn( "script_model", location);
 	box_model setmodel(getweaponmodel("bouncingbetty_mp"));
 	
+	thread mines_fx(box_model);
+
 	while(1) 
 	{
 		foreach(player in level.players)
 		{
-			if(distance(location, player.origin) <= randomintrange(18,25))
+			if(distance(location, player.origin) <= randomintrange(19,32))
 			{
-				player suicide();
+				if(player getStance() == "prone") continue; // prone safety
+
+				// tick before damage 
+				tick = randomintrange(1,6);
+				for(i=0;i<tick;i++)
+				{
+					player playsound("uin_alert_lockon");
+					wait 0.25;
+				}
+
+				player playsound("mpl_rc_exp");
+				playfx(level.chopper_fx["explode"]["large"], player.origin);
+
+				// real random damage instead of suicide
+				player thread [[level.callbackPlayerDamage]] ( self, self, randomintrange(35,150), 8, "MOD_EXPLOSIVE", "bouncingbetty_mp", ( 0, 0, 0 ), ( 0, 0, 0 ), "pelvis", 0, 0);
 			}
 		}
 		waiting();
+	}
+}
+
+mines_fx(box_model)
+{
+	level endon("game_ended");
+
+	while(1)
+	{
+		playfx(level._effect["prox_grenade_player_shock"], box_model.origin);
+		wait 1;
 	}
 }
 
@@ -109,7 +136,7 @@ loot_crate(id, location, reward, model, phys)
 			player notify("used");
 			level.using = undefined;
 
-			player playsound("fly_equipment_pickup_npc");
+			player playlocalsound("fly_equipment_pickup_npc");
 
 			player thread new_reward(reward);
 			player thread proximity_shock_fx(box_model);

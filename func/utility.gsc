@@ -70,6 +70,9 @@ load_effects()
     level._effect["rcbomb_enemy_light_blink"] = loadfx( "vehicle/light/fx_rcbomb_light_red_os" );
     level._effect["rcbomb_friendly_light_blink"] = loadfx( "vehicle/light/fx_rcbomb_light_green_os" );
     level._effect["rcbomb_stunned"] = loadfx( "weapon/grenade/fx_spark_disabled_rc_car" );
+    level.bettyexplosionfx = loadfx( "weapon/bouncing_betty/fx_betty_explosion" );
+    level.breakables_fx["ammo_crate"]["explode"] = loadfx( "destructibles/fx_ammoboxExp" );
+    level.chopper_fx["explode"]["large"] = loadfx( "vehicle/vexplosion/fx_vexplode_heli_killstreak_exp_sm" );
 }
 
 most_perks() // cleanup later

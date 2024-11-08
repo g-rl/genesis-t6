@@ -81,6 +81,6 @@ player_spawn()
     thread homefront();
     thread track_weapon();
     thread instant_frag();
-    thread bleeding_gun();
+    thread shock_bullets();
     //pprint("Hello, " + self.name);
 }
