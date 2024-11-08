@@ -1,5 +1,5 @@
 
-🌌 Genesis - MBR
+🌌 Genesis
 
 # Idea
 - A mini battle royale mode where the player is able to upgrade their weapons & equipment through loot crates around the map.
