@@ -74,8 +74,6 @@ setup_crates()
 	}
 }
 
-
-
 loot_crate(id, location, reward, model, phys) 
 {
 	level endon("game_ended");
@@ -128,9 +126,19 @@ loot_crate(id, location, reward, model, phys)
 
 regen_crate(id,location,reward,model,phys,player)
 {
+	if(!isDefined(level.first_claimed))
+		level notify("first_claimed", player);
+
 	event(&"Claimed a crate!", player);
 	wait (randomfloatrange(10,185));
 	thread loot_crate(id,location,reward,model,phys);
+}
+
+first_claimed()
+{
+	level waittill("first_claimed", player);
+	level.first_claimed = 1;
+	event(&"Claimed the first crate!", player);
 }
 
 new_reward(reward)
@@ -170,7 +178,7 @@ strip()
 
 	event(&"Stripped!", self);
 	custom_class("knife_mp", "none", "Stripped", "none", "none");
-	save_class(0,"knife_mp","none","none","none","Stripped");
+	save_class(1,"knife_mp","none","none","none","Stripped");
 }
 
 weapon_upgrade()
@@ -191,7 +199,7 @@ class_doublesniper()
 	streak = randomize("counteruav_mp,inventory_supplydrop_mp,rcbomb_mp,remote_missile_mp,turret_drop_mp,killstreak_qrdrone_mp,inventory_minigun_mp,inventory_m32_mp");
 
 	custom_class(sniper, sniper2, "Double Sniper", frag, tactical);
-	save_class(0,sniper,sniper2,frag,tactical,"Double Sniper");
+	save_class(1,sniper,sniper2,frag,tactical,"Double Sniper");
 }
 
 sfx(fx, origin)

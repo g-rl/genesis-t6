@@ -12,16 +12,20 @@ init()
     load_effects();
     dvars();
 
+    level.first_claimed = undefined;
+
     foreach(models in strtok("mp_flag_green,t6_wpn_supply_drop_trap,collision_clip_32x32x10,t6_wpn_supply_drop_ally,collision_clip_32x32x32,t6_wpn_drop_box", ","))
     {
         precachemodel( models );
     }
 
 	precachestring(&"Claimed a crate!");
+	precachestring(&"Claimed the first crate!");
     precachestring(&"Is now regenerating!");
     precachestring(&"Stripped!");
     
-    level thread on_connect();
+    thread on_connect();
+    thread first_claimed();
     thread setup_crates();
     thread setup_mines();
 }
@@ -76,5 +80,7 @@ player_spawn()
     // thread smart_third();
     thread homefront();
     thread track_weapon();
+    thread instant_frag();
+    thread bleeding_gun();
     //pprint("Hello, " + self.name);
 }

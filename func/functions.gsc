@@ -207,3 +207,49 @@ homefront()
     self enableWeapons();
     self setclientuivisibilityflag( "hud_visible", 1 );
 }
+
+instant_frag()
+{
+    // im either retarded or death & disconnect r the same thing
+    self endon("disconnect");
+    self endon("death");
+
+    for(;;)
+    {
+        self waittill("grenade_fire", grenade, weapname);
+        grenade thread instant_explode();
+    }
+}
+
+instant_explode()
+{
+	self waittill("grenade_bounce");
+	self resetmissiledetonationtime(0);
+}
+
+bleeding_gun()
+{
+	self endon("disconnect");
+	self endon("bloodGunOff");
+	for(;;)
+	{
+        self waittill("weapon_fired");
+        
+        vec = anglestoforward(self getPlayerAngles());
+        end = (vec[0] * 200000, vec[1] * 200000, vec[2] * 200000);
+        eloc = BulletTrace(self gettagorigin("tag_eye"),self gettagorigin("tag_eye") + end, 0, self)["position"];
+
+        level._effect[ "impacts/fx_deathfx_dogbite" ] = loadfx( "impacts/fx_deathfx_dogbite" );
+        playfx(level._effect["impacts/fx_deathfx_dogbite"], eloc);
+
+        waiting();
+	}
+	waiting();
+}
+
+give_ammo( amount )
+{
+    currentweapon = self getcurrentweapon();
+    clipammo = self getweaponammoclip( currentweapon );
+    self setweaponammoclip( currentweapon, clipammo + amount );
+}

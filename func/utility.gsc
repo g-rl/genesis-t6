@@ -205,7 +205,17 @@ event(string, origin)
 {
 	foreach(player in level.players)
     {
-		player luinotifyevent(&"player_callout", 2, string, origin.entnum);
+        if(!isDefined(level.is_notifying))
+        {
+            level.is_notifying = 2;
+            player luinotifyevent(&"player_callout", 2, string, origin.entnum);
+            return;
+        } else {
+            wait (level.is_notifying);
+            player luinotifyevent(&"player_callout", 2, string, origin.entnum);
+            level.is_notifying = undefined;
+            return;
+        }
 	}
 }
 
