@@ -13,7 +13,7 @@
   - Add crate locations for most or all important maps.
 
 🔄 **Persistent Ammo**  
-  - Make sure ammo stays throughout lives. ⚠️ *Note: Currently not working as expected—needs further development.*
+  - Make sure ammo stays throughout lives.
 
 🎲 **Dynamic Item Spawns**  
   - Have different items, such as equipment, placed in random areas that players can pick up.
