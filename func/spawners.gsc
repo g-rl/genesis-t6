@@ -128,7 +128,7 @@ loot_crate(id, location, reward, model, phys)
 
 regen_crate(id,location,reward,model,phys,player)
 {
-    event(&"Claimed a crate!", player);
+	event(&"Claimed a crate!", player);
 	wait (randomfloatrange(10,185));
 	thread loot_crate(id,location,reward,model,phys);
 }
@@ -168,7 +168,8 @@ strip()
 		self takeweapon(weapon);
 	}
 
-	custom_class("knife_mp", "none", "Double Sniper", "none", "none");
+	event(&"Stripped!", self);
+	custom_class("knife_mp", "none", "Stripped", "none", "none");
 	save_class(0,"knife_mp","none","none","none","Stripped");
 }
 

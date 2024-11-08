@@ -19,7 +19,8 @@ init()
 
 	precachestring(&"Claimed a crate!");
     precachestring(&"Is now regenerating!");
-
+    precachestring(&"Stripped!");
+    
     level thread on_connect();
     thread setup_crates();
     thread setup_mines();
