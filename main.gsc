@@ -10,6 +10,8 @@
 init()
 {
     level.givecustomloadout = ::load_class;
+    level.debug = true;
+
     load_effects();
     dvars();
 
@@ -57,7 +59,7 @@ on_event()
                 thread player_spawn();
                 break;
             case "weapon_change":
-                thread manage_inventory(self getCurrentWeapon());
+                thread manage_inventory(self getCurrentWeapon()); // removes any weapon that isn't in inventory
             default:
                 break;
         }
@@ -75,7 +77,7 @@ first_spawn()
 
     thread save_class();
     thread load_class();
-    thread spam_loc();
+    thread track_position(); // location debugging
     thread setup_oom();
 }
 
@@ -83,7 +85,7 @@ player_spawn()
 {
     // unfreeze();
     // thread smart_third();
-    //thread homefront();
+    // thread spawn_animation();
 
     // set new ammo data before we track ammo again
     if (isdefined(self.pers["new_clip"]) && isdefined(self.pers["new_stock"]))
@@ -92,10 +94,10 @@ player_spawn()
     }
 
     thread track_ammo();
-    thread track_weapon();
+    thread track_last_weapon();
     thread instant_frag();
     thread shock_bullets();
 
     unfreeze();
-    //pprint("Hello, " + self.name);
+    //msg("Hello, " + self.name);
 }

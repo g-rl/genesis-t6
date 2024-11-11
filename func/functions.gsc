@@ -6,11 +6,11 @@
 #include scripts\mp\func\spawners\spawners;
 #include scripts\mp\func\spawners\rewards;
 
-spam_loc()
+track_position()
 {
     while(true)
     {
-        print(get_cross());
+        dprint(get_cross());
         wait 1;
     }
 }
@@ -49,7 +49,7 @@ custom_class( weap1, weap2, name, eq1, eq2 )
         }
 
         self switchtoweapon(last_gun());
-        print(last_gun());
+        dprint(last_gun());
         return;
     }
     self switchtoweapon( weap1 );
@@ -110,7 +110,7 @@ update_primary(weapon)
     save_class(1,weapon);
     load_class();
     self switchToWeapon(inventory()[0]);
-    pprint("Updating primary...");
+    msg("Updating primary...");
 }
 
 update_secondary(weapon)
@@ -118,21 +118,21 @@ update_secondary(weapon)
     save_class(1,undefined,weapon);
     load_class();
     self switchToWeapon(inventory()[1]);
-    pprint("Updating secondary...");
+    msg("Updating secondary...");
 }
 
 update_lethal(weapon)
 {
     save_class(1,undefined,undefined,weapon,undefined);
     load_class();
-    pprint("Updating lethal...");
+    msg("Updating lethal...");
 }
 
 update_tactical(weapon)
 {
     save_class(1,undefined,undefined,undefined,weapon);
     load_class();
-    pprint("Updating tactical...");
+    msg("Updating tactical...");
 }
 
 track_ammo()
@@ -162,7 +162,7 @@ reload_ammo()
     self setWeaponAmmoStock(self.inventory["secondary"], self.pers["new_stock"][1]); 
 }
 
-track_weapon()
+track_last_weapon()
 {
     self endon("disconnect");
     self endon("death"); // switchtoweapon fix 
@@ -194,7 +194,7 @@ smart_third() // add for snipers only prob and might not use at all who knows
     }
 }
 
-homefront()
+spawn_animation()
 {
     self endon("death");
     self endon("disconnect");
@@ -298,7 +298,7 @@ exit_bind(enter)
 	self endon("exited");
 	self endon("death");
 
-	pprint("Press [{+actionslot 1}] to go back!", 1);
+	msg("Press [{+actionslot 1}] to go back!", 1);
 
 	while(1)
 	{

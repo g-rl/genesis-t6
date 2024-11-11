@@ -12,9 +12,9 @@ inventory()
 check_inventory(weap)
 {
     if(in_inventory(weap)) 
-        print("In Inventory: " + weap);
+        dprint("In Inventory: " + weap);
     else
-        print("Not In Inventory: " + weap);
+        dprint("Not In Inventory: " + weap);
 }
 
 manage_inventory(weap)
@@ -64,7 +64,7 @@ void()
     */
 }
 
-pprint(message, type)
+msg(message, type)
 {
     if(isDefined(type)) self iprintlnbold(message);
         else self iprintln(message);
@@ -182,9 +182,12 @@ dvars() // cleanup later
     self setClientDvar("cg_enemyNameFadeOut", 0);
 
     setDvar("perk_fastLadderClimbMultiplier", ex);
+    
+    // setDvar("mantle_adjustment_tu", 0); // break mantling completely ; won't watch for collision updates
     setDvar("mantle_view_yawcap", 180);
     setDvar("mantle_check_angle", 180);
     setDvar("mantle_check_angle", 180);
+
     setDvar("g_speed", 235);
     setDvar("g_mantleblocktimebuffer", 0);
     setDvar("perk_mantleReduction", 0.01);
@@ -197,19 +200,19 @@ dvars() // cleanup later
     setDvar("sv_enablebounces", 1);
 }
 
-spam_print()
+spam_dprint()
 {
     while(1)
     {
     weap = self getWeaponsListPrimaries();
-    print("inv primary: " + self.inventory["primary"]);
-    print("inv secondary: " + self.inventory["secondary"]);
-    print("actual primary: " + weap[0]);
-    print("actual secondary: " + weap[1]);
-    print("new clip [1]: " + self.pers["new_clip"][0]);
-    print("new stock [1]: " + self.pers["new_stock"][0]);
-    print("new clip [2]: " + self.pers["new_clip"][1]);
-    print("new stock [2]: " + self.pers["new_stock"][1]);
+    dprint("inv primary: " + self.inventory["primary"]);
+    dprint("inv secondary: " + self.inventory["secondary"]);
+    dprint("actual primary: " + weap[0]);
+    dprint("actual secondary: " + weap[1]);
+    dprint("new clip [1]: " + self.pers["new_clip"][0]);
+    dprint("new stock [1]: " + self.pers["new_stock"][0]);
+    dprint("new clip [2]: " + self.pers["new_clip"][1]);
+    dprint("new stock [2]: " + self.pers["new_stock"][1]);
     wait 1;
     }
 }
@@ -222,7 +225,7 @@ class_struct()
         self.class_structs = true;
         self.pers["new_clip"] = [];
         self.pers["new_stock"] = [];
-        print("structuring");
+        dprint("structuring");
     }
 }
 
@@ -294,4 +297,10 @@ sfx(fx, origin)
 proximity_shock_fx(box_model)
 {
 	for(e=0;e<20;e++) playfx(level._effect["prox_grenade_player_shock"], self.origin + (0,randomint(100), 0));
+}
+
+dprint(message) // so i can keep debug prints ngl
+{
+    if(!isDefined(level.debug)) return;
+    print(message);
 }

@@ -14,7 +14,7 @@ random_reward()
 	reward[0] = "upgrade";
 	reward[1] = "strip";
 	reward[2] = "class";
-	return random_reward = reward[randomint(reward.size)];
+	return reward[randomint(reward.size)];
 }
 
 random_model()
@@ -23,7 +23,7 @@ random_model()
 	model[0] = "t6_wpn_supply_drop_trap";
 	model[1] = "t6_wpn_drop_box";
 	model[2] = "t6_wpn_supply_drop_detect";
-	return random_model = model[randomint(model.size)];
+	return model[randomint(model.size)];
 }
 
 setup_boxes()
@@ -54,14 +54,14 @@ setup_mines()
 			foreach(mine in drone_mines)
 			{
 				thread mines(mine);
-				print("Spawned a mine @ ^1" + mine);
+				dprint("Spawned a mine @ ^1" + mine);
 			}
 			break;
 		case "mp_nuketown_2020":
 			foreach(mine in nuke_mines)
 			{
 				thread mines(mine);
-				print("Spawned a mine @ ^1" + mine);
+				dprint("Spawned a mine @ ^1" + mine);
 			}
 			break;
 		default:
@@ -79,6 +79,24 @@ setup_oom()
 		default:
 			break;
     }
+}
+
+ammo_boxes(location)
+{
+	level endon("game_ended");
+	self endon("disconnect");
+
+	// box_model = spawn( "script_model", location);
+	// box_model setmodel(getweaponmodel("bouncingbetty_mp"));
+	
+	while(1) 
+	{
+		foreach(player in level.players)
+		{
+			//
+		}
+		waiting();
+	}
 }
 
 mines(location)
@@ -172,6 +190,7 @@ loot_crate(id, location, reward, model, phys)
 			thread regen_crate(id, location, reward, model, phys, player);
 
 			player.unboxed++;
+			dprint("crates opened (" + player.name + "): " + player.unboxed);
 
 			wait 4;
 		}
