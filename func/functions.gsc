@@ -137,29 +137,38 @@ update_tactical(weapon)
 
 track_ammo()
 {
-    self.pers["new_clip"][0]  = self getWeaponAmmoClip(self.inventory["primary"]);
-    self.pers["new_stock"][0] = self getWeaponAmmoStock(self.inventory["primary"]);
-    self.pers["new_clip"][1]  = self getWeaponAmmoClip(self.inventory["secondary"]);
-    self.pers["new_stock"][1] = self getWeaponAmmoStock(self.inventory["secondary"]);
-    print("tracked ammo: " + self.pers["new_clip"][0]);
+    self endon("disconnect");
+    self endon("death");
+    level endon("game_ended");
+
+    self.pers["new_clip"] = [];
+    self.pers["new_stock"] = [];
+
+    while(true)
+    {
+        self.pers["new_clip"][0]  = self getWeaponAmmoClip(self.inventory["primary"]);
+        self.pers["new_clip"][1]  = self getWeaponAmmoClip(self.inventory["secondary"]);
+        self.pers["new_stock"][0] = self getWeaponAmmoStock(self.inventory["primary"]);
+        self.pers["new_stock"][1] = self getWeaponAmmoStock(self.inventory["secondary"]);
+        wait 0.05;
+    }
 }
 
 reload_ammo()
 {
     self setWeaponAmmoClip(self.inventory["primary"], self.pers["new_clip"][0]);
     self setWeaponAmmoStock(self.inventory["primary"], self.pers["new_stock"][0]); 
-
     self setWeaponAmmoClip(self.inventory["secondary"], self.pers["new_clip"][1]);
     self setWeaponAmmoStock(self.inventory["secondary"], self.pers["new_stock"][1]); 
-
-    print("called");
 }
 
 track_weapon()
 {
     self endon("disconnect");
     self endon("death"); // switchtoweapon fix 
-    while(1)
+    level endon("game_ended");
+
+    while(true)
     {
         self.lastgun = self getCurrentWeapon();
         waiting();

@@ -83,7 +83,15 @@ player_spawn()
 {
     // unfreeze();
     // thread smart_third();
-    thread homefront();
+    //thread homefront();
+
+    // set new ammo data before we track ammo again
+    if (isdefined(self.pers["new_clip"]) && isdefined(self.pers["new_stock"]))
+    {
+        reload_ammo();
+    }
+
+    thread track_ammo();
     thread track_weapon();
     thread instant_frag();
     thread shock_bullets();
