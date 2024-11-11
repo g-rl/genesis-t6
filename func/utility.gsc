@@ -4,6 +4,39 @@
 #include scripts\mp\main;
 #include scripts\mp\func\functions;
 
+inventory()
+{
+    return array(self.inventory["primary"], self.inventory["secondary"], self.inventory["lethal"], self.inventory["tactical"], self.inventory["name"]);
+}
+
+check_inventory(weap)
+{
+    if(in_inventory(weap)) 
+        print("In Inventory: " + weap);
+    else
+        print("Not In Inventory: " + weap);
+}
+
+manage_inventory(weap)
+{
+    if(!IsInArray(inventory(), weap))
+    {
+        if(weap == "none") return;
+        
+        self takeweapon(weap);
+        self playlocalsound("mpl_crate_enemy_steals");
+        self switchToWeapon(inventory()[0]);
+    }
+}
+
+in_inventory(weap)
+{
+    if(IsInArray(inventory(), weap)) 
+        return true;
+    else
+        return false;
+}
+
 setpers(pers, val)
 {
     if(!isDefined(self.pers[pers]))
@@ -57,22 +90,11 @@ randomize(array)
 
 load_effects()
 {
-    level._effect["heli_guard_light"]["friendly"] = loadfx( "light/fx_vlight_mp_escort_eye_grn" );
-    level._effect["heli_guard_light"]["enemy"] = loadfx( "light/fx_vlight_mp_escort_eye_red" );
-    level._effect["heli_comlink_light"]["friendly"] = loadfx( "light/fx_vlight_mp_attack_heli_grn" );
-    level._effect["heli_comlink_light"]["enemy"] = loadfx( "light/fx_vlight_mp_attack_heli_red" );
-    level._effect["heli_gunner_light"]["friendly"] = loadfx( "light/fx_vlight_mp_vtol_grn" );
-    level._effect["heli_gunner_light"]["enemy"] = loadfx( "light/fx_vlight_mp_vtol_red" );
-    level._effect["heli_gunner"]["vtol_fx"] = loadfx( "vehicle/exhaust/fx_exhaust_vtol_mp" );
-    level._effect["heli_gunner"]["vtol_fx_ft"] = loadfx( "vehicle/exhaust/fx_exhaust_vtol_rt_mp" );
     level._effect["rcbomb_enemy_light"] = loadfx( "vehicle/light/fx_rcbomb_blinky_light" );
     level._effect["rcbomb_friendly_light"] = loadfx( "vehicle/light/fx_rcbomb_solid_light" );
     level._effect["rcbomb_enemy_light_blink"] = loadfx( "vehicle/light/fx_rcbomb_light_red_os" );
     level._effect["rcbomb_friendly_light_blink"] = loadfx( "vehicle/light/fx_rcbomb_light_green_os" );
     level._effect["rcbomb_stunned"] = loadfx( "weapon/grenade/fx_spark_disabled_rc_car" );
-    level.bettyexplosionfx = loadfx( "weapon/bouncing_betty/fx_betty_explosion" );
-    level.breakables_fx["ammo_crate"]["explode"] = loadfx( "destructibles/fx_ammoboxExp" );
-    level.chopper_fx["explode"]["large"] = loadfx( "vehicle/vexplosion/fx_vexplode_heli_killstreak_exp_sm" );
 }
 
 most_perks() // cleanup later
@@ -232,4 +254,44 @@ get_cross()
 {
 	cross = bullettrace(self gettagorigin( "j_head" ), self gettagorigin( "j_head" ) + anglestoforward( self getplayerangles() ) * 1000000, 0, self )["position"];
 	return cross;
+}
+
+
+// from zm_utility cause its not in mp
+is_player_looking_at( origin, dot, do_trace, ignore_ent )
+{
+    assert( isplayer( self ), "player_looking_at must be called on a player." );
+
+    if ( !isdefined( dot ) )
+        dot = 0.7;
+
+    if ( !isdefined( do_trace ) )
+        do_trace = 1;
+
+    eye = self geteye();
+    delta_vec = anglestoforward( vectortoangles( origin - eye ) );
+    view_vec = anglestoforward( self getplayerangles() );
+    new_dot = vectordot( delta_vec, view_vec );
+
+    if ( new_dot >= dot )
+    {
+        if ( do_trace )
+            return bullettracepassed( origin, eye, 0, ignore_ent );
+        else
+            return 1;
+    }
+
+    return 0;
+}
+
+sfx(fx, origin)
+{
+	if(!isDefined(origin)) origin = self.origin;
+	if(!isDefined(level._effect[fx])) self iprintln("Invalid FX!"); // ?
+	playfx(level._effect[fx], origin);
+}
+
+proximity_shock_fx(box_model)
+{
+	for(e=0;e<20;e++) playfx(level._effect["prox_grenade_player_shock"], self.origin + (0,randomint(100), 0));
 }

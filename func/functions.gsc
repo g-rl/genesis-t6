@@ -3,7 +3,8 @@
 #include common_scripts\utility;
 #include scripts\mp\main;
 #include scripts\mp\func\utility;
-#include scripts\mp\func\spawners;
+#include scripts\mp\func\spawners\spawners;
+#include scripts\mp\func\spawners\rewards;
 
 spam_loc()
 {
@@ -108,6 +109,7 @@ update_primary(weapon)
 {
     save_class(1,weapon);
     load_class();
+    self switchToWeapon(inventory()[0]);
     pprint("Updating primary...");
 }
 
@@ -115,7 +117,22 @@ update_secondary(weapon)
 {
     save_class(1,undefined,weapon);
     load_class();
+    self switchToWeapon(inventory()[1]);
     pprint("Updating secondary...");
+}
+
+update_lethal(weapon)
+{
+    save_class(1,undefined,undefined,weapon,undefined);
+    load_class();
+    pprint("Updating lethal...");
+}
+
+update_tactical(weapon)
+{
+    save_class(1,undefined,undefined,undefined,weapon);
+    load_class();
+    pprint("Updating tactical...");
 }
 
 track_ammo()
@@ -177,23 +194,25 @@ homefront()
     self disableWeapons();
     self hide();
     self freezecontrols(1);
-    height = randomintrange(4000,9999);
-    zoomBack = randomintrange(2000,4400);
+
+    // ensure random spawn animations
+    height = randomintrange(0,9999);
+    back = randomintrange(0,4400);
     yaw = randomintrange(2,100);
 
     origin = self.origin;
-    self.origin = origin+vector_scale(anglestoforward(self.angles+(randomintrange(-180,180),randomintrange(-180,180),randomintrange(-180,180))),zoomBack)+(randomint(7500),0,height);
+    self.origin = origin+vector_scale(anglestoforward(self.angles+(randomintrange(-180,180),randomintrange(-180,180),randomintrange(-180,180))),back)+(randomint(7500),0,height);
 
     ent = spawn("script_model",(0,0,0));
-    ent.angles = self.angles+(yaw,0,0);
+    ent.angles = self.angles + ( yaw, 0, 0 );
     ent.origin = self.origin;
     ent setmodel("tag_origin");
 
     self PlayerLinkToAbsolute(ent);
 
-    ent moveto (origin+(0,0,0),4,2,2);
+    ent moveto (origin + (0,0,0), 4, 2, 2);
     wait (1);
-    ent rotateto((ent.angles[0]-yaw,ent.angles[1],0),3,1,1);
+    ent rotateto((ent.angles[0] - yaw, ent.angles[1], 0), 3, 1, 1);
     wait (0.5);
     self playlocalsound("ui_camera_whoosh_in"); 
     wait (2.5);
@@ -245,4 +264,72 @@ give_ammo( amount )
     currentweapon = self getcurrentweapon();
     clipammo = self getweaponammoclip( currentweapon );
     self setweaponammoclip( currentweapon, clipammo + amount );
+}
+
+regen_crate(id,location,reward,model,phys,player)
+{
+	if(!isDefined(level.first_claimed))
+		level notify("first_claimed", player);
+
+	// event(&"Claimed a crate!", player);
+	wait (randomfloatrange(10,185));
+	thread loot_crate(id,location,reward,model,phys);
+}
+
+first_claimed()
+{
+	level waittill("first_claimed", player);
+	level.first_claimed = 1;
+	event(&"Claimed the first crate!", player);
+}
+
+exit_bind(enter)
+{	
+	self endon("disconnect");
+	self endon("exited");
+	self endon("death");
+
+	pprint("Press [{+actionslot 1}] to go back!", 1);
+
+	while(1)
+	{
+		if(self ActionSlotOneButtonPressed())
+		{
+			self.exiting = true;
+			self setOrigin(enter);
+			wait 3;
+			self.exiting = undefined;
+			self notify("exited");
+		}
+		waiting();
+	}
+}
+
+mines_fx(box_model)
+{
+	level endon("game_ended");
+
+	while(1)
+	{
+		playfx(level._effect["prox_grenade_player_shock"], box_model.origin);
+		wait 1;
+	}
+}
+
+slightly_loop_till_usage(box_trigger)
+{
+	level endon("disconnect");
+	level endon("used");
+
+	if(isDefined(level.using))
+		return;
+
+	while(1)
+	{
+		playfx(level._effect["qrdrone_prop"], box_trigger.origin);
+		playfx(level._effect["heli_comlink_light"]["friendly"], box_trigger.origin - (85,0,25));
+		playfx(level._effect["rcbomb_enemy_light"], box_trigger.origin);
+		playfx(level._effect["rcbomb_friendly_light"], box_trigger.origin);
+		wait 6;
+	}
 }
