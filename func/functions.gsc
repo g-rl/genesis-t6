@@ -282,7 +282,7 @@ regen_crate(id,location,reward,model,phys,player)
 
 	// event(&"Claimed a crate!", player);
 	wait (randomfloatrange(10,185));
-	thread loot_crate(id,location,reward,model,phys);
+	thread loot_crate(id, location, random_reward(), random_model(), phys); // rewrite phys later
 }
 
 first_claimed()

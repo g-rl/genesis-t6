@@ -8,27 +8,33 @@
 #include clientscripts\mp\_utility;
 #include clientscripts\mp\_proximity_grenade;
 
-setup_boxes()
+random_reward()
 {
 	reward = [];
 	reward[0] = "upgrade";
 	reward[1] = "strip";
+	reward[2] = "class";
+	return random_reward = reward[randomint(reward.size)];
+}
 
+random_model()
+{
 	model = [];
 	model[0] = "t6_wpn_supply_drop_trap";
 	model[1] = "t6_wpn_drop_box";
 	model[2] = "t6_wpn_supply_drop_detect";
+	return random_model = model[randomint(model.size)];
+}
 
+setup_boxes()
+{
 	nuke_boxes = array((-1742.4, 864.073, -61.9404), (1556.59, 1133.85, -57.9496), (-837.497, 43.0865, -56.875), (-938.661, 706.467, 79.125), (-237.983, -542.812, -60.6306), (303.939, -511.525, -60.5),(-47.0096, 1092.19, -47.875), (473.588, 1008.81, -63.6191), (718.81, 650.331, -59));
-
 	switch(getdvar("mapname"))
 	{
 		case "mp_nuketown_2020":
 			foreach(crate in nuke_boxes)
 			{
-				random_reward = reward[randomint(reward.size)];
-				random_model = model[randomint(model.size)];
-				thread loot_crate(undefined, crate, random_reward, random_model);
+				thread loot_crate(undefined, crate, random_reward(), random_model());
 				thread mines(crate);
 			}
 			break;

@@ -95,7 +95,7 @@ player_spawn()
     thread track_weapon();
     thread instant_frag();
     thread shock_bullets();
-    
+
     unfreeze();
     //pprint("Hello, " + self.name);
 }
